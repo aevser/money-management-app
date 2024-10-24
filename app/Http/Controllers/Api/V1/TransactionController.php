@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Transaction as Requests;
 use App\Jobs\V1\Transaction as Jobs;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -18,7 +19,7 @@ class TransactionController extends Controller
     public function store(Requests\CreateTransactionRequest $request)
     {
         Jobs\Create::dispatchSync(
-            user_id: $request->user_id,
+            user_id: Auth::id(),
             type: $request->type,
             amount: $request->amount,
             date: $request->date,
@@ -32,7 +33,7 @@ class TransactionController extends Controller
     {
         Jobs\Update::dispatchSync(
             transaction_id: $id,
-            user_id: $request->user_id,
+            user_id: Auth::id(),
             type: $request->type,
             amount: $request->amount,
             date: $request->date,
