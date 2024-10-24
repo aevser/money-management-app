@@ -16,3 +16,12 @@ use App\Http\Controllers\Api\V1;
 
 Route::apiResource('transaction', V1\TransactionController::class)
     ->except('show');
+
+Route::post('register', [V1\Auth\AuthController::class, 'register'])
+    ->name('user.register');
+
+Route::post('login', [V1\Auth\AuthController::class, 'login'])
+    ->name('user.login');
+
+Route::post('logout', [V1\Auth\AuthController::class, 'logout'])
+    ->name('user.logout');
