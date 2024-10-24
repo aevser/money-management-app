@@ -2,6 +2,7 @@
 
 namespace App\Jobs\V1\Transaction;
 
+use App\Models\Transaction;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class Index
@@ -21,6 +22,7 @@ class Index
      */
     public function handle()
     {
-        return \App\Models\Transaction::all();
+        $transaction = Transaction::all();
+        return \App\Http\Resources\V1\Transaction\Index::collection($transaction);
     }
 }

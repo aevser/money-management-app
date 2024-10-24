@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Transaction as Requests;
 use App\Jobs\V1\Transaction as Jobs;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,13 +18,13 @@ class TransactionController extends Controller
         return response()->json(['transaction' => $transaction], Response::HTTP_OK);
     } // Все записи
 
-    public function store(Requests\CreateTransactionRequest $request)
+    public function store(Request $request)
     {
         Jobs\Create::dispatchSync(
             user_id: Auth::id(),
             type: $request->type,
             amount: $request->amount,
-            date: $request->date,
+            date: Carbon::parse($request->date)->format('Y-m-d'),
             description: $request->description
         );
 
@@ -36,7 +38,7 @@ class TransactionController extends Controller
             user_id: Auth::id(),
             type: $request->type,
             amount: $request->amount,
-            date: $request->date,
+            date: Carbon::parse($request->date)->format('Y-m-d'),
             description: $request->description
         );
 
@@ -48,4 +50,14 @@ class TransactionController extends Controller
         Jobs\Delete::dispatchSync($id);
         return response()->json('Транзакция удалена', Response::HTTP_OK);
     } // Удаляем запись по ID
+
+    public function search(Request $request)
+    {
+        $transaction = Jobs\Search::dispatchSync(
+            start_date: $request->start_date,
+            end_date: $request->end_date
+        );
+
+        return response()->json(['transaction' => $transaction], Response::HTTP_OK);
+    } // Фильтр
 }

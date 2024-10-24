@@ -22,6 +22,9 @@ Route::middleware('auth:sanctum')->group(function (){
     // Выход
     Route::post('logout', [V1\Auth\AuthController::class, 'logout'])
         ->name('user.logout');
+
+    Route::get('transaction/search', [V1\TransactionController::class, 'search'])
+        ->name('transaction.user');
 });
 
 // Регистрация
